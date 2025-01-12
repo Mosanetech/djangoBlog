@@ -6,3 +6,5 @@ function hideShowComments(){
         form.style.display ='none';
       }
 }
+
+//add comment
