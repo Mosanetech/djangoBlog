@@ -7,4 +7,4 @@ function hideShowComments(){
       }
 }
 
-//add comment
+//add comments
