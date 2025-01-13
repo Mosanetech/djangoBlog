@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyBlog</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="./main.js"></script>
+    <style>
+        body{
+    background-color: hsl(0, 4%, 90%);
+}
+.nav{
+    padding-top: 15px;
+    max-width: 100%;
+   margin-bottom:5px;
+}
+
+.nav-container{
+    
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #cacdcd;
+}
+.nav-container ul li {
+
+ display: inline;
+ margin: 25px;
+ list-style-type: none;
+}
+.nav-container ul li a{
+    float:right ;
+    margin: 10px;
+color: #0d0e0e;
+text-decoration:none;
+}
+.feed{
+    display:flex;
+}
+.likes .like-count {
+    display:block;
+    border: none;
+}
+.comments .btn,.likes .btn{
+    border: none;
+}
+
+.recentPost, .featuredPost{
+  
+    display: block;
+    border-radius: 5px;
+    background-color:white ;
+    padding: 5px;
+}
+.featuredPost .mainImg{
+    max-width:100% ;
+    position: relative;
+    border-radius: 5px;
+}
+.featuredPost .authorImg{
+    max-width: 10%;
+    border-radius: 50%;
+}
+footer{
+    padding: 0px;
+    border-radius: 5px;
+    background-color: #252525;
+    color:white ;
+    text-align: center;
+}
+footer ul li{
+    list-style-type: none;
+    display: inline;
+   
+}
+footer ul li a{
+    color: white;
+    margin: 5px;
+    text-decoration:none;
+}
+@media screen and(max-height:460px){
+    footer ul li{
+        display: block;
+    } 
+    .nav-container ul li {    
+        display: block;
+       }
+    }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+       <div class="nav-container">
+        <div>MyBlog</div>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Articles</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+       </div>
+    </nav>
+    <!--main content-->
+    <main>
+        <!--featured post-->
+        {% for feature in featured %}
+        <div class="featuredPost">
+            <img src="{{feature.mainImg}}" alt="image" class="mainImg">
+            <span>{{ feature.maintitle }}</span>
+            <h1>{{feature.title}}</h1>
+            <p>{{feature.paragraph}}</p>
+        <div>
+            <img src="{{feature.mainImg}}" class="authorImg" alt="image">
+            <div>
+                <p>{{feature.username}}</p>
+                <p>{{feature.publication_date}}</p>
+                <p> {{feature.publication_date}}8 min read</p>
+            </div>
+        </div>
+        </div>
+        {% endfor %}
+        <!--recent post-->
+        <div class="recentPost">
+        <h2>Recent Posts</h2>
+       <!-- {% for article in articles %}-->
+        <article>
+            <img src="installedApks.png">
+            <div>
+                <span>CODING</span>
+                <h3>{{ article.title }}</h3>
+                <p>{{ article.description }}</p>
+                <div>
+                    <span>{{article.publication_date}}</span>
+                    <span>A</span>
+                    <span>{{article.reading_time}} min read</span>
+                </div>
+            </div>
+             <!--likes and comments-->
+           <!--  <div class="feed">
+                <div class="likes">
+                 <button class="btn">👍</button>
+                 <span class="like-count"></span>Likes
+                </div>
+                <div class="comments">
+                 <button class="btn" id="btn" onclick="hideComment()">Comments</button>
+                
+                 <textarea id="commentArea" rows="3" placeholder="Comment..." style="display: none;border:1px black;">{{comment.commentArea}}</textarea>
+                
+             </div>-->
+
+            <!--comments-->
+
+        <!-- Display Comments -->
+ <h3 class="text-lg font-semibold text-gray- 700 mt-6" onclick="hideShowComments()">Comments : </h3>
+<div class="space-y-4 mt-4">
+{% for comment in article.comments.all %}
+<div class="border-t pt -4">
+   <p class="text-sm text-gray-800 font-semibold">{{comment.name}}</p>
+   <p class="text-sm text-gray-600 mt-1">{{comment.comment_text}}</p>
+   <p class="text-sm text-gray-500 mt-1">Ratingg: {{comment.rating}}/5 .Posted on {{comment.created_at}}</p>
+</div>
+{% empty %}
+
+<p class="text-sm text-gray-500">No comments yet.</p>
+
+{% endfor %}
+
+<!-- Add Comment Form -->
+
+<form id="form" method="post" action="/myblogApp/{{ article.id }}/add_comment/" class="mt-6 space-y -4 bg-gray- 50 p-4 rounded- lg border" style="display: none;">
+{% csrf_token %}
+<div>
+    <label for="name" class="block text-sm font-medium text- gray - 700" >Name</label>
+    <input type="text" id="name" name="name " required >
+</div>
+<div>
+    <label for="comment-text">Comment</label>
+    <textarea id="comment-text" name="comment-text" required></textarea>
+</div>
+
+<div >
+    <label for="rating">Rating(1-5):</label>
+      <select id="rating" name="rating" required>
+         {% for i in "12345" %}
+        <option value="{{i}}">{{i}}</option>
+       {% endfor %}
+      </select>
+</div>
+<button type="submit">Send</button>
+</form>
+             <!--comments-->
+        </article>
+       {% endfor %}
+    </div>
+    </main>
+    <!--footer-->
+    <footer>
+        <div>
+            <div>MyBlog</div>
+            <ul>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Privacy</a></li>
+                <li><a href="#">Terms</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+        <div>&COPY;2025 MyBlog.All rights reserved.</div>
+    </footer>
+
+        /*
+        function hideComment(){
+let commentArea = document.getElementById("commentArea");
+
+    if(commentArea.style.display=="none"){
+        commentArea.style.display="block";
+    } else{
+        commentArea.style.display= "none";
+    }
+}*/
+
+</body>
+</html>
